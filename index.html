@@ -56,7 +56,7 @@ window.onload = async () => {
     saveCheckboxState(removecomma);
 
     for (;;) {
-        divmain.innerHTML = "XLS/XLSXファイルをドロップしてください";
+        divmain.innerHTML = "XLS/XLSXファイルをこちらにドロップしてください";
         const items = await waitDropFiles(divmain);
         const files = [];
         for (const item of items) {
@@ -69,16 +69,22 @@ window.onload = async () => {
             const bin = await readAsArrayBufferAsync(file);
             try {
                 const ws = XLSX.decode(bin);
-                const csv = XLSX.toCSV(ws);
-                if (trimwhitespace.checked) {
-                    trimWhiteSpaceCSV(csv);
+                const multisheets = !firstsheet.checked;
+                const csvs0 = XLSX.toCSV(ws, multisheets);
+                const csvs = multisheets ? csvs0 : [csvs0];
+                for (let i = 0; i < csvs.length; i++) {
+                    const csv = csvs[i];
+                    if (trimwhitespace.checked) {
+                        trimWhiteSpaceCSV(csv);
+                    }
+                    if (removecomma.checked) {
+                        removeCommaCSV(csv);
+                    }
+                    const scsv = CSV.encode(csv);
+                    const num = csvs.length == 1 ? "" : "_" + (i + 1);
+                    const csvfn = file.name.substring(0, file.name.lastIndexOf(".")) + num + ".csv";
+                    files.push({ name: csvfn, data: scsv });
                 }
-                if (removecomma.checked) {
-                    removeCommaCSV(csv);
-                }
-                const scsv = CSV.encode(csv);
-                const csvfn = file.name.substring(0, file.name.lastIndexOf(".")) + ".csv";
-                files.push({ name: csvfn, data: scsv });
             } catch (e) {
                 console.log(e);
                 alert("CSVファイルの読み込みに失敗しました。データが正常かご確認ください。");
@@ -98,19 +104,20 @@ window.onload = async () => {
     
 <div class="jumbotron">
     <h1 class="display-4">excel2csv</h1>
-    <p class="lead">Excelのxlsファイルや、xlsxファイルをCSVファイルに変換します<br>（複数ファイル対応、複数シートがある場合は最初の1シートのみ変換します）</p>
+    <p class="lead">Excelのxlsファイルや、xlsxファイルをCSVファイルに変換します<br>（複数ファイル対応、複数シート対応）</p>
 </div>
 
 <div class="mx-5">
     <div id="divmain" class="border px-5 mx-auto pt-3 pb-3"></div>
     <label><input type="checkbox" id="trimwhitespace" class="m-3">値前後の空白を削除</label>
     <label><input type="checkbox" id="removecomma" class="m-3">コンマ入り数値のコンマを削除</label>
+    <label><input type="checkbox" id="firstsheet" class="m-3">先頭のシートのみ変換</label>
 </div>
 
 <footer class="text-muted">
   <div class="container my-4 mx-0">
     <p>App: CC BY <a href="https://fukuno.jig.jp/3261">福野泰介の一日一創</a> by <a href="https://twitter.com/taisukef">@taisukef</a> (<a href=https://github.com/code4fukui/excel2csv/>src on GitHub</a>)</p>
-    <p>Lib: <a href="https://github.com/taisukef/sheetjs-es">sheetjs-es</a> (xls/xlsx decoder)<br>
+    <p>Lib: <a href="https://github.com/taisukef/sheetjs-es/tree/es/es">XLSX.js</a> forked <a href="https://github.com/taisukef/sheetjs-es">sheetjs-es</a> (xls/xlsx decoder)<br>
     <p>Design: <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a></p>
   </div>
 </footer>
