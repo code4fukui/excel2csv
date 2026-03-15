@@ -1,6 +1,6 @@
 # excel2csv
 
-ExcelのxlsファイルやxlsxファイルをCSVファイルに変換するツールです。複数ファイル、複数シートへの対応も可能です。
+ExcelのXLSファイルやXLSXファイルをCSVファイルに変換するツールです。複数ファイル、複数シートへの対応が可能です。
 
 ## デモ
 https://code4fukui.github.io/excel2csv/

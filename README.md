@@ -1,5 +1,7 @@
 # excel2csv
 
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+
 Excel to CSV converter, supports xls and xlsx files.
 
 ## Demo
