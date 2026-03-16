@@ -4,9 +4,6 @@
 
 Excel to CSV converter, supports xls and xlsx files.
 
-## Demo
-https://code4fukui.github.io/excel2csv/
-
 ## Features
 - Converts Excel files (xls and xlsx) to CSV
 - Supports multiple sheets in Excel files
